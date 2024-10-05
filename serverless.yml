@@ -42,7 +42,7 @@ resources:
 
 functions:
   api:
-    handler: src/handler.handler
+    handler: dist/handler.handler
     events:
       - httpApi: "*"
 
