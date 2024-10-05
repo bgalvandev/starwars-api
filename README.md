@@ -1,6 +1,10 @@
+<div align="center">
+
 # Star Wars API
 
-Esta API permite interactuar con la informacion de los personajes de Star Wars utilizando Serverless Framework y AWS DynamoDB. La API ofrece integración con SWAPI para obtener datos y los transforma al español.
+</div>
+
+Esta API permite interactuar con la información de los personajes de Star Wars utilizando Serverless Framework y AWS DynamoDB. La API ofrece integración con SWAPI para obtener datos y los transforma al español.
 
 ## Tabla de Contenidos
 
@@ -9,11 +13,11 @@ Esta API permite interactuar con la informacion de los personajes de Star Wars u
 - [Configuración](#configuración)
 - [Endpoints](#endpoints)
   - [GET /](#get-)
-  - [GET /people](#get-people)
-  - [POST /people](#post-people)
-  - [GET /people/:id](#get-peopleid)
   - [GET /swapi/people](#get-swapipeople)
   - [GET /swapi/people/:id](#get-swapipeopleid)
+  - [GET /dynamo/people](#get-people)
+  - [POST /dynamo/people](#post-people)
+  - [GET /dynamo/people/:id](#get-peopleid)
 - [Errores](#errores)
 
 ## Especificaciones
@@ -70,74 +74,6 @@ Devuelve un mensaje de bienvenida.
 }
 ```
 
-### GET /people
-
-Obtiene todos los personajes de la base de datos.
-
-**Query Params**:
-
-- `page`: número de página (opcional, por defecto 1).
-
-**Respuesta de ejemplo**:
-
-```json
-{
-  "conteo": 10,
-  "siguiente": "http://localhost:3000/people?page=2",
-  "anterior": null,
-  "resultados": [
-    {
-      "id": "1",
-      "nombre": "Luke Skywalker",
-      "altura": "172",
-      ...
-    }
-  ]
-}
-```
-
-### POST /people
-
-Crea un nuevo personaje en la base de datos.
-
-**Cuerpo de la solicitud**:
-
-```json
-{
-  "name": "Luke Skywalker",
-  "height": "172",
-  "weight": "77",
-  ...
-}
-```
-
-**Respuesta de ejemplo**:
-
-```json
-{
-  "message": "Personaje creado exitosamente",
-  "personaje": {
-    "id": "2",
-    "nombre": "Luke Skywalker",
-    ...
-  }
-}
-```
-
-### GET /people/:id
-
-Obtiene un personaje específico por ID.
-
-**Respuesta de ejemplo**:
-
-```json
-{
-  "id": "1",
-  "nombre": "Luke Skywalker",
-  ...
-}
-```
-
 ### GET /swapi/people
 
 Obtiene personajes de SWAPI y los transforma al español.
@@ -166,6 +102,74 @@ Obtiene personajes de SWAPI y los transforma al español.
 ### GET /swapi/people/:id
 
 Obtiene un personaje específico de SWAPI por ID.
+
+**Respuesta de ejemplo**:
+
+```json
+{
+  "id": "1",
+  "nombre": "Luke Skywalker",
+  ...
+}
+```
+
+### GET /dynamo/people
+
+Obtiene todos los personajes de la base de datos.
+
+**Query Params**:
+
+- `page`: número de página (opcional, por defecto 1).
+
+**Respuesta de ejemplo**:
+
+```json
+{
+  "conteo": 10,
+  "siguiente": "http://localhost:3000/dynamo/people?page=2",
+  "anterior": null,
+  "resultados": [
+    {
+      "id": "1",
+      "nombre": "Luke Skywalker",
+      "altura": "172",
+      ...
+    }
+  ]
+}
+```
+
+### POST /dynamo/people
+
+Crea un nuevo personaje en la base de datos.
+
+**Cuerpo de la solicitud**:
+
+```json
+{
+  "name": "Luke Skywalker",
+  "height": "172",
+  "weight": "77",
+  ...
+}
+```
+
+**Respuesta de ejemplo**:
+
+```json
+{
+  "message": "Personaje creado exitosamente",
+  "personaje": {
+    "id": "2",
+    "nombre": "Luke Skywalker",
+    ...
+  }
+}
+```
+
+### GET /dynamo/people/:id
+
+Obtiene un personaje específico por ID.
 
 **Respuesta de ejemplo**:
 
