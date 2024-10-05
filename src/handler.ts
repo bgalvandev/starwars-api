@@ -2,6 +2,7 @@ import serverless from "serverless-http";
 import express from "express";
 import { AppRoutes } from "./presentation/routes";
 import { DynamoDatabase } from "./data/dynamodb";
+import { getSwaggerDocument } from "../docs";
 
 const app = express();
 
@@ -14,6 +15,9 @@ export const handler = async (event: any, context: any) => {
   const isConnected = await DynamoDatabase.connect();
 
   // Ruta de prueba para la raíz
+  app.get("/swagger/docs", (req, res) => {
+    res.json(getSwaggerDocument());
+  });
   app.get("/", (req, res) => {
     const welcomeMessage =
       "¡Star Wars API con Serverless y Clean Architecture!";
