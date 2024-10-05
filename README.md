@@ -2,9 +2,9 @@
 
 # Star Wars API
 
-</div>
-
 Esta API permite interactuar con la información de los personajes de Star Wars utilizando Serverless Framework y AWS DynamoDB. La API ofrece integración con SWAPI para obtener datos y los transforma al español.
+
+</div>
 
 ## Tabla de Contenidos
 
@@ -13,11 +13,11 @@ Esta API permite interactuar con la información de los personajes de Star Wars 
 - [Configuración](#configuración)
 - [Endpoints](#endpoints)
   - [GET /](#get-)
-  - [GET /swapi/people](#get-swapipeople)
-  - [GET /swapi/people/:id](#get-swapipeopleid)
-  - [GET /dynamo/people](#get-people)
-  - [POST /dynamo/people](#post-people)
-  - [GET /dynamo/people/:id](#get-peopleid)
+  - [GET /api/swapi/people](#get-api-swapi-people)
+  - [GET /api/swapi/people/:id](#get-api-swapi-peopleid)
+  - [GET /api/dynamo/people](#get-api-dynamo-people)
+  - [POST /api/dynamo/people](#post-api-dynamo-people)
+  - [GET /api/dynamo/people/:id](#get-api-dynamo-peopleid)
 - [Errores](#errores)
 
 ## Especificaciones
@@ -50,6 +50,12 @@ Esta API permite interactuar con la información de los personajes de Star Wars 
 
 3. Crea un archivo `.env` basado en el archivo `.env.template` y agrega tus credenciales y configuraciones.
 
+4. Despliega la API utilizando Serverless:
+
+   ```bash
+   serverless deploy
+   ```
+
 ## Configuración
 
 Asegúrate de tener configuradas las siguientes variables de entorno en tu archivo `.env`:
@@ -74,7 +80,7 @@ Devuelve un mensaje de bienvenida.
 }
 ```
 
-### GET /swapi/people
+### GET /api/swapi/people
 
 Obtiene personajes de SWAPI y los transforma al español.
 
@@ -87,7 +93,7 @@ Obtiene personajes de SWAPI y los transforma al español.
 ```json
 {
   "conteo": 82,
-  "siguiente": "http://localhost:3000/swapi/people?page=2",
+  "siguiente": "http://localhost:3000/api/swapi/people?page=2",
   "anterior": null,
   "resultados": [
     {
@@ -99,7 +105,7 @@ Obtiene personajes de SWAPI y los transforma al español.
 }
 ```
 
-### GET /swapi/people/:id
+### GET /api/swapi/people/:id
 
 Obtiene un personaje específico de SWAPI por ID.
 
@@ -113,7 +119,7 @@ Obtiene un personaje específico de SWAPI por ID.
 }
 ```
 
-### GET /dynamo/people
+### GET /api/dynamo/people
 
 Obtiene todos los personajes de la base de datos.
 
@@ -126,7 +132,7 @@ Obtiene todos los personajes de la base de datos.
 ```json
 {
   "conteo": 10,
-  "siguiente": "http://localhost:3000/dynamo/people?page=2",
+  "siguiente": "http://localhost:3000/api/dynamo/people?page=2",
   "anterior": null,
   "resultados": [
     {
@@ -139,7 +145,7 @@ Obtiene todos los personajes de la base de datos.
 }
 ```
 
-### POST /dynamo/people
+### POST /api/dynamo/people
 
 Crea un nuevo personaje en la base de datos.
 
@@ -147,9 +153,9 @@ Crea un nuevo personaje en la base de datos.
 
 ```json
 {
-  "name": "Luke Skywalker",
-  "height": "172",
-  "weight": "77",
+  "nombre": "Luke Skywalker",
+  "altura": "172",
+  "peso": "77",
   ...
 }
 ```
@@ -167,7 +173,7 @@ Crea un nuevo personaje en la base de datos.
 }
 ```
 
-### GET /dynamo/people/:id
+### GET /api/dynamo/people/:id
 
 Obtiene un personaje específico por ID.
 
