@@ -1,76 +1,187 @@
-<!--
-title: 'Serverless Framework Node Express API on AWS'
-description: 'This template demonstrates how to develop and deploy a simple Node Express API running on AWS Lambda using the Serverless Framework.'
-layout: Doc
-framework: v4
-platform: AWS
-language: nodeJS
-priority: 1
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, Inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
--->
+# Star Wars API
 
-# Serverless Framework Node Express API on AWS
+Esta API permite interactuar con la informacion de los personajes de Star Wars utilizando Serverless Framework y AWS DynamoDB. La API ofrece integración con SWAPI para obtener datos y los transforma al español.
 
-This template demonstrates how to develop and deploy a simple Node Express API service running on AWS Lambda using the Serverless Framework.
+## Tabla de Contenidos
 
-This template configures a single function, `api`, which is responsible for handling all incoming requests using the `httpApi` event. To learn more about `httpApi` event configuration options, please refer to [httpApi event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/). As the event is configured in a way to accept all incoming requests, the Express.js framework is responsible for routing and handling requests internally. This implementation uses the `serverless-http` package to transform the incoming event request payloads to payloads compatible with Express.js. To learn more about `serverless-http`, please refer to the [serverless-http README](https://github.com/dougmoscrop/serverless-http).
+- [Especificaciones](#especificaciones)
+- [Instalación](#instalación)
+- [Configuración](#configuración)
+- [Endpoints](#endpoints)
+  - [GET /](#get-)
+  - [GET /people](#get-people)
+  - [POST /people](#post-people)
+  - [GET /people/:id](#get-peopleid)
+  - [GET /swapi/people](#get-swapipeople)
+  - [GET /swapi/people/:id](#get-swapipeopleid)
+- [Errores](#errores)
 
-## Usage
+## Especificaciones
 
-### Deployment
+- **Lenguaje**: TypeScript
+- **Framework**: Serverless Framework
+- **Base de Datos**: AWS DynamoDB
+- **Entorno**: Node.js 20.x
+- **Dependencias Principales**:
+  - `@aws-sdk/client-dynamodb`
+  - `express`
+  - `axios`
+  - `dotenv`
+  - `serverless-http`
 
-Install dependencies with:
+## Instalación
 
+1. Clona el repositorio:
+
+   ```bash
+   git clone https://github.com/bgalvandev/starwars-api.git
+   cd starwars-api
+   ```
+
+2. Instala las dependencias:
+
+   ```bash
+   npm install
+   ```
+
+3. Crea un archivo `.env` basado en el archivo `.env.template` y agrega tus credenciales y configuraciones.
+
+## Configuración
+
+Asegúrate de tener configuradas las siguientes variables de entorno en tu archivo `.env`:
+
+```env
+SWAPI_API_URL=https://swapi.py4e.com/api
+AWS_REGION=us-east-1
+DYNAMODB_TABLE=People
 ```
-npm install
-```
 
-and then deploy with:
+## Endpoints
 
-```
-serverless deploy
-```
+### GET /
 
-After running deploy, you should see output similar to:
+Devuelve un mensaje de bienvenida.
 
-```
-Deploying "aws-node-express-api" to stage "dev" (us-east-1)
-
-✔ Service deployed to stack aws-node-express-api-dev (96s)
-
-endpoint: ANY - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com
-functions:
-  api: aws-node-express-api-dev-api (2.3 kB)
-```
-
-_Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [`httpApi` event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/).
-
-### Invocation
-
-After successful deployment, you can call the created application via HTTP:
-
-```
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/
-```
-
-Which should result in the following response:
+**Respuesta de ejemplo**:
 
 ```json
-{ "message": "Hello from root!" }
+{
+  "welcome": "¡Star Wars API con Serverless y Clean Architecture!"
+}
 ```
 
-### Local development
+### GET /people
 
-The easiest way to develop and test your function is to use the `dev` command:
+Obtiene todos los personajes de la base de datos.
 
+**Query Params**:
+
+- `page`: número de página (opcional, por defecto 1).
+
+**Respuesta de ejemplo**:
+
+```json
+{
+  "conteo": 10,
+  "siguiente": "http://localhost:3000/people?page=2",
+  "anterior": null,
+  "resultados": [
+    {
+      "id": "1",
+      "nombre": "Luke Skywalker",
+      "altura": "172",
+      ...
+    }
+  ]
+}
 ```
-serverless dev
+
+### POST /people
+
+Crea un nuevo personaje en la base de datos.
+
+**Cuerpo de la solicitud**:
+
+```json
+{
+  "name": "Luke Skywalker",
+  "height": "172",
+  "weight": "77",
+  ...
+}
 ```
 
-This will start a local emulator of AWS Lambda and tunnel your requests to and from AWS Lambda, allowing you to interact with your function as if it were running in the cloud.
+**Respuesta de ejemplo**:
 
-Now you can invoke the function as before, but this time the function will be executed locally. Now you can develop your function locally, invoke it, and see the results immediately without having to re-deploy.
+```json
+{
+  "message": "Personaje creado exitosamente",
+  "personaje": {
+    "id": "2",
+    "nombre": "Luke Skywalker",
+    ...
+  }
+}
+```
 
-When you are done developing, don't forget to run `serverless deploy` to deploy the function to the cloud.
+### GET /people/:id
+
+Obtiene un personaje específico por ID.
+
+**Respuesta de ejemplo**:
+
+```json
+{
+  "id": "1",
+  "nombre": "Luke Skywalker",
+  ...
+}
+```
+
+### GET /swapi/people
+
+Obtiene personajes de SWAPI y los transforma al español.
+
+**Query Params**:
+
+- `page`: número de página (opcional, por defecto 1).
+
+**Respuesta de ejemplo**:
+
+```json
+{
+  "conteo": 82,
+  "siguiente": "http://localhost:3000/swapi/people?page=2",
+  "anterior": null,
+  "resultados": [
+    {
+      "id": "1",
+      "nombre": "Luke Skywalker",
+      ...
+    }
+  ]
+}
+```
+
+### GET /swapi/people/:id
+
+Obtiene un personaje específico de SWAPI por ID.
+
+**Respuesta de ejemplo**:
+
+```json
+{
+  "id": "1",
+  "nombre": "Luke Skywalker",
+  ...
+}
+```
+
+## Errores
+
+La API utiliza códigos de estado HTTP para indicar el resultado de las operaciones. Ejemplos de respuestas de error:
+
+- **400 Bad Request**: Solicitud incorrecta.
+- **401 Unauthorized**: No autorizado.
+- **404 Not Found**: Recurso no encontrado.
+- **500 Internal Server Error**: Error interno del servidor.
