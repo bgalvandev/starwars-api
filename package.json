@@ -3,8 +3,28 @@
   "version": "1.0.0",
   "description": "",
   "author": "Bruno Galván",
+  "scripts": {
+    "start": "serverless offline",
+    "build": "rimraf dist && tsc",
+    "deploy": "serverless deploy"
+  },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.664.0",
+    "@aws-sdk/lib-dynamodb": "^3.664.0",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "env-var": "^7.5.0",
     "express": "^4.19.2",
-    "serverless-http": "^3.2.0"
+    "http-status-codes": "^2.3.0",
+    "lodash": "^4.17.21",
+    "serverless-http": "^3.2.0",
+    "serverless-offline": "^14.3.2"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.10",
+    "@types/node": "^22.7.4",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
   }
 }
