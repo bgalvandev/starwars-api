@@ -13,11 +13,11 @@ Esta API permite interactuar con la información de los personajes de Star Wars 
 - [Configuración](#configuración)
 - [Endpoints](#endpoints)
   - [GET /](#get-)
-  - [GET /api/swapi/people](#get-api-swapi-people)
-  - [GET /api/swapi/people/:id](#get-api-swapi-peopleid)
-  - [GET /api/dynamo/people](#get-api-dynamo-people)
-  - [POST /api/dynamo/people](#post-api-dynamo-people)
-  - [GET /api/dynamo/people/:id](#get-api-dynamo-peopleid)
+  - [GET /api/swapi/people](#get-apiswapipeople)
+  - [GET /api/swapi/people/:id](#get-apiswapipeopleid)
+  - [GET /api/dynamo/people](#get-apidynamopeople)
+  - [POST /api/dynamo/people](#post-apidynamopeople)
+  - [GET /api/dynamo/people/:id](#get-apidynamopeopleid)
 - [Errores](#errores)
 
 ## Especificaciones
