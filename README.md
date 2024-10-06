@@ -2,44 +2,34 @@
 
 # Star Wars API
 
-Esta API permite interactuar con la información de los personajes de Star Wars utilizando Serverless Framework y AWS DynamoDB. La API ofrece integración con SWAPI para obtener datos y los transforma al español.
+**Star Wars API** es un proyecto construido con **Serverless Framework** y **AWS DynamoDB**. La API permite interactuar con los personajes del de Star Wars utilizando como fuente de datos **SWAPI** y traduce los objetos al español.
 
 </div>
 
+## Características
+
+- **Integración con SWAPI**: Obtén información sobre personajes de Star Wars desde SWAPI y tradúcela al español.
+- **AWS DynamoDB**: Crea y consulta personajes almacenados en una tabla DynamoDB.
+- **Serverless Framework**: Marco de desarrollo para desplegar la API en **AWS Lambda**.
+- **Endpoints REST**: Existen dos conjuntos de endpoints, uno para interactuar con DynamoDB y otro para SWAPI.
+- **Arquitectura Limpia (Clean Architecture)**: Código organizado para facilitar su mantenimiento y extensibilidad.
+
 ## Tabla de Contenidos
 
-- [Especificaciones](#especificaciones)
 - [Instalación](#instalación)
 - [Configuración](#configuración)
+- [Despliegue](#despliegue)
 - [Endpoints](#endpoints)
-  - [GET /](#get-)
-  - [GET /api/swapi/people](#get-apiswapipeople)
-  - [GET /api/swapi/people/:id](#get-apiswapipeopleid)
-  - [GET /api/dynamo/people](#get-apidynamopeople)
-  - [POST /api/dynamo/people](#post-apidynamopeople)
-  - [GET /api/dynamo/people/:id](#get-apidynamopeopleid)
-- [Errores](#errores)
-
-## Especificaciones
-
-- **Lenguaje**: TypeScript
-- **Framework**: Serverless Framework
-- **Base de Datos**: AWS DynamoDB
-- **Entorno**: Node.js 20.x
-- **Dependencias Principales**:
-  - `@aws-sdk/client-dynamodb`
-  - `express`
-  - `axios`
-  - `dotenv`
-  - `serverless-http`
+- [Manejo de Errores](#manejo-de-errores)
 
 ## Instalación
 
-1. Clona el repositorio:
+Para clonar y ejecutar este proyecto localmente, sigue estos pasos:
+
+1. Clona este repositorio:
 
    ```bash
    git clone https://github.com/bgalvandev/starwars-api.git
-   cd starwars-api
    ```
 
 2. Instala las dependencias:
@@ -48,148 +38,200 @@ Esta API permite interactuar con la información de los personajes de Star Wars 
    npm install
    ```
 
-3. Crea un archivo `.env` basado en el archivo `.env.template` y agrega tus credenciales y configuraciones.
+3. Compila el código TypeScript:
+   ```bash
+   npm run build
+   ```
 
-4. Despliega la API utilizando Serverless:
+## Configuración
+
+Este proyecto utiliza un archivo `.env` para la configuración de las variables de entorno. Crea un archivo basado en el `.env.template` proporcionado:
+
+```bash
+cp .env.template .env
+```
+
+Asegúrate de configurar las siguientes variables en el archivo `.env`:
+
+```bash
+SWAPI_API_URL=https://swapi.dev/api
+AWS_REGION=us-east-1
+DYNAMODB_TABLE=PeopleTable
+```
+
+## Despliegue
+
+1. Inicia el despliegue a AWS con **Serverless Framework**:
 
    ```bash
    serverless deploy
    ```
 
-## Configuración
-
-Asegúrate de tener configuradas las siguientes variables de entorno en tu archivo `.env`:
-
-```env
-SWAPI_API_URL=https://swapi.py4e.com/api
-AWS_REGION=us-east-1
-DYNAMODB_TABLE=People
-```
+2. Si deseas probar la API localmente antes de desplegar:
+   ```bash
+   serverless offline
+   ```
 
 ## Endpoints
 
-### GET /
+### DynamoDB Endpoints
 
-Devuelve un mensaje de bienvenida.
+1. **Obtener personajes de DynamoDB:**
 
-**Respuesta de ejemplo**:
+   ```bash
+   GET /api/dynamo/people
+   ```
 
-```json
-{
-  "welcome": "¡Star Wars API con Serverless y Clean Architecture!"
-}
-```
+   - **Descripción**: Retorna los personajes almacenados en DynamoDB.
+   - **Paginación** `page`: Número de página (por defecto 1).
 
-### GET /api/swapi/people
+     ```bash
+     GET /api/dynamo/people/?page=1
+     ```
 
-Obtiene personajes de SWAPI y los transforma al español.
+   - **Respuesta**:
+     ```json
+     {
+        "conteo": 10,
+        "siguiente": "http://localhost:3000/api/dynamo/people?page=2",
+        "anterior": null,
+        "resultados": [
+           {
+              "id": "1",
+              "nombre": "Luke Skywalker",
+              "altura": "172",
+              ...
+           }
+        ]
+     }
+     ```
 
-**Query Params**:
+2. **Obtener personaje por ID de DynamoDB:**
 
-- `page`: número de página (opcional, por defecto 1).
+   ```bash
+   GET /api/dynamo/people/{id}
+   ```
 
-**Respuesta de ejemplo**:
+   - **Descripción**: Obtiene un personaje por ID almacenado en DynamoDB.
 
-```json
-{
-  "conteo": 82,
-  "siguiente": "http://localhost:3000/api/swapi/people?page=2",
-  "anterior": null,
-  "resultados": [
-    {
-      "id": "1",
-      "nombre": "Luke Skywalker",
-      ...
-    }
-  ]
-}
-```
+   - **Respuesta** (Ejemplo):
 
-### GET /api/swapi/people/:id
+     ```json
+     {
+        "id": "1",
+        "nombre": "Luke Skywalker",
+        "altura": "172",
+        "colorCabello": "blond",
+        "colorPiel": "fair",
+        "colorOjos": "blue",
+        ...
+     }
+     ```
 
-Obtiene un personaje específico de SWAPI por ID.
+3. **Crear un nuevo personaje en DynamoDB:**
 
-**Respuesta de ejemplo**:
+   ```bash
+   POST /api/dynamo/people
+   ```
 
-```json
-{
-  "id": "1",
-  "nombre": "Luke Skywalker",
-  ...
-}
-```
+   - **Descripción**: Crea un nuevo personaje en DynamoDB.
 
-### GET /api/dynamo/people
+   - **Body** (Ejemplo):
 
-Obtiene todos los personajes de la base de datos.
+     ```json
+     {
+       "id": "123",
+       "name": "Luke Skywalker",
+       "height": "172",
+       "mass": "77",
+       "hair_color": "blond",
+       "skin_color": "fair",
+       "eye_color": "blue",
+       "birth_year": "19BBY",
+       "gender": "male",
+       "homeworld": "Tatooine",
+       "films": ["A New Hope", "The Empire Strikes Back"]
+     }
+     ```
 
-**Query Params**:
+   - **Respuesta** (Ejemplo):
 
-- `page`: número de página (opcional, por defecto 1).
+     ```json
+     {
+       "message": "Personaje creado exitosamente",
+       "personaje": {
+         "id": "123",
+         "nombre": "Luke Skywalker",
+         "altura": "172",
+         "masa": "77",
+         "colorCabello": "blond",
+         "colorPiel": "fair",
+         "colorOjos": "blue",
+         "añoNacimiento": "19BBY",
+         "genero": "male",
+         "mundoNatal": "Tatooine",
+         "peliculas": ["A New Hope", "The Empire Strikes Back"]
+       }
+     }
+     ```
 
-**Respuesta de ejemplo**:
+### SWAPI Endpoints
 
-```json
-{
-  "conteo": 10,
-  "siguiente": "http://localhost:3000/api/dynamo/people?page=2",
-  "anterior": null,
-  "resultados": [
-    {
-      "id": "1",
-      "nombre": "Luke Skywalker",
-      "altura": "172",
-      ...
-    }
-  ]
-}
-```
+1. **Obtener personajes de SWAPI:**
 
-### POST /api/dynamo/people
+   ```bash
+   GET /api/swapi/people
+   ```
 
-Crea un nuevo personaje en la base de datos.
+   - **Descripción**: Retorna los personajes de Star Wars directamente desde SWAPI.
+   - **Paginación** `page`: Número de página (por defecto 1).
 
-**Cuerpo de la solicitud**:
+     ```bash
+     GET /api/swapi/people/?page=1
+     ```
 
-```json
-{
-  "nombre": "Luke Skywalker",
-  "altura": "172",
-  "peso": "77",
-  ...
-}
-```
+   - **Respuesta**:
 
-**Respuesta de ejemplo**:
+     ```json
+     {
+        "conteo": 82,
+        "siguiente": "http://localhost:3000/api/swapi/people?page=2",
+        "anterior": null,
+        "resultados": [
+           {
+              "id": "1",
+              "nombre": "Luke Skywalker",
+              ...
+           }
+        ]
+     }
+     ```
 
-```json
-{
-  "message": "Personaje creado exitosamente",
-  "personaje": {
-    "id": "2",
-    "nombre": "Luke Skywalker",
-    ...
-  }
-}
-```
+2. **Obtener personaje por ID de SWAPI:**
 
-### GET /api/dynamo/people/:id
+   ```bash
+   GET /api/swapi/people/{id}
+   ```
 
-Obtiene un personaje específico por ID.
+   - **Descripción**: Obtiene un personaje por ID directamente desde SWAPI.
 
-**Respuesta de ejemplo**:
+   - **Respuesta** (Ejemplo):
+     ```json
+     {
+        "id": "",
+        "nombre": "Luke Skywalker",
+        "altura": "172",
+        "masa": "77",
+        "colorCabello": "blond",
+        "colorPiel": "fair",
+        "colorOjos": "blue",
+        ...
+     }
+     ```
 
-```json
-{
-  "id": "1",
-  "nombre": "Luke Skywalker",
-  ...
-}
-```
+## Manejo de Errores
 
-## Errores
-
-La API utiliza códigos de estado HTTP para indicar el resultado de las operaciones. Ejemplos de respuestas de error:
+La API utiliza códigos de estado HTTP para indicar el estadp de las operaciones:
 
 - **400 Bad Request**: Solicitud incorrecta.
 - **401 Unauthorized**: No autorizado.
